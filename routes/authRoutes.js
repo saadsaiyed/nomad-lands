@@ -1,15 +1,15 @@
 const passport = require('passport');
 
-//module statement is written to fetch the app instance from index.js. This function will be called when we import the file in index.js.
+//module statement is written to fetch the app instance from index.js.
+//This function will be called when we import the file in index.js
 module.exports = (app) => {
     app.get(
         '/auth/google',
         passport.authenticate(
-            'google',
-            { scope: ['profile', 'email'] }
+            'google', { scope: ['profile', 'email'] }
         )
     );
-    
+
     app.get(
         '/auth/google/callback',
         passport.authenticate('google'),
