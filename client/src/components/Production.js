@@ -1,18 +1,17 @@
-import React, { Component } from 'react'
-// import { Link } from "react-router-dom";
+import React from 'react'
 
-class Dashboard extends Component {
-    render() {
-        return (
+function Production() {
+    return (
+        <div>
             <header className="bg-white shadow">
                 <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                     <h1 className="text-3xl font-bold text-gray-900">
-                        Dashboard
+                        Production
                     </h1>
                 </div>
             </header>
-        )
-    }
+        </div>
+    )
 }
 
-export default Dashboard;
+export default Production

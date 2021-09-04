@@ -1,5 +1,5 @@
-//CSS imports
-import "materialize-css/dist/css/materialize.min.css";
+//Tailwind CSS Styling
+import './index.css';
 //React imports
 import React from "react";
 import ReactDOM from "react-dom";
