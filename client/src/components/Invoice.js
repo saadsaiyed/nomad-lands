@@ -95,8 +95,26 @@ function addAnotherRow(currentRow) {
 
                     td.appendChild(input);
 
-                    //for the next element event listening logic
-                    td.appendChild(hiddenInput);
+                    break;
+                
+                case 5:
+                    nameID = "converted_0" + newID.toString();
+                    td.setAttribute(
+                        "class",
+                        "px-6 py-4 whitespace-nowrap text-right text-sm font-medium"
+                    );
+                    input.setAttribute("type", "checkbox");
+                    input.setAttribute("name", nameID);
+                    input.setAttribute("id", nameID);
+                    input.setAttribute(
+                        "class",
+                        "h-7 w-7 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                    );
+                    input.setAttribute("tabindex", "1");
+
+                    td.appendChild(input);
+                    td.appendChild(hiddenInput); //for the next element event listening logic
+
                     break;
 
                 default:
@@ -189,7 +207,7 @@ export default function Invoice() {
                                     name="invoice_number"
                                     type="text"
                                     tabIndex="1"
-                                />
+                                    />
                             </div>
                             <div className="md:ml-2">
                                 <label className="block mb-2 text-sm font-bold text-gray-500" htmlFor="total_quantity">
@@ -200,7 +218,9 @@ export default function Invoice() {
                                     id="total_quantity"
                                     name="total_quantity"
                                     type="number"
+                                    defaultValue="0"
                                     tabIndex="1"
+                                    readOnly
                                 />
                             </div>
                         </div>
@@ -243,6 +263,12 @@ export default function Invoice() {
                                             className="py-3 text-xs font-bold text-gray-500 bg-gray-200 uppercase tracking-wide sticky top-0"
                                         >
                                             From Direct
+                                        </th>
+                                        <th
+                                            scope="col"
+                                            className="py-3 text-xs font-bold text-gray-500 bg-gray-200 uppercase tracking-wide sticky top-0"
+                                        >
+                                            Converted
                                         </th>
                                     </tr>
                                 </thead>
@@ -297,6 +323,16 @@ export default function Invoice() {
                                             <input
                                                 id="taken_from_direct_0"
                                                 name="taken_from_direct_0"
+                                                type="checkbox"
+                                                className="h-7 w-7 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                                                tabIndex="1"
+                                            />
+                                            <input type="hidden" id="hidden_input_0" value="1" />
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                            <input
+                                                id="converted_0"
+                                                name="converted_0"
                                                 type="checkbox"
                                                 className="h-7 w-7 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
                                                 tabIndex="1"
