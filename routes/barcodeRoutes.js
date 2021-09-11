@@ -4,7 +4,9 @@ const Product = mongoose.model("products");
 
 module.exports = (app) => {
     app.get("/api/barcode/:id", async (req, res) => {
-        const response = await Barcode.findById(req.params.id);
+        const response = await Barcode.findOne({
+            barcode_id: req.params.id,
+        }).exec();
         res.send(response);
     });
     app.get("/api/update", async (req, res) => {
@@ -57,7 +59,10 @@ module.exports = (app) => {
 
     //Find Product details using Barcode_ID
     app.get("/api/barcode/:barcode/product", (req, res) => {
-        Barcode.findById(req.params.barcode)
+        Barcode.findOne({
+            barcode_id: req.params.barcode,
+        })
+            .exec()
             .then(barcode => Product.findById(barcode._product)
                 .then(result => res.send(result))
                 .catch(err => res.status(500).send(err))
