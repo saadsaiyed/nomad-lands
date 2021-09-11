@@ -5,9 +5,12 @@ const passport = require("passport");
 const keys = require("./config/keys");
 
 require("./models/User");
+require("./models/Product");
+require("./models/Barcode");
+
 require("./services/passport");
 
-mongoose.connect(keys.mongoURI);
+mongoose.connect(keys.mongoURI, { useUnifiedTopology: true });  // Connect to the MongoDB
 
 const app = express();
 
@@ -21,6 +24,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 require("./routes/authRoutes")(app); // This is to pass the app instance to the authRoutes.js
+require("./routes/productRoutes")(app); 
+require("./routes/barcodeRoutes")(app); 
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT);
+app.listen(process.env.PORT || 5000);

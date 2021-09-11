@@ -5,9 +5,11 @@ import * as actions from "../actions";
 
 import Header from "./Header";
 import Dashboard from "./Dashboard";
+import Invoice from "./Invoice";
+import Production from "./Production";
+import ProductReport from "./ProductReport";
+import Landing from "./Landing";
 import { FETCH_USER } from '../actions/types';
-
-const Landing = () => <h1>Landing</h1>;
 
 class App extends Component{
     componentDidMount(){
@@ -16,12 +18,15 @@ class App extends Component{
 
     render(){
         return (
-            <div className="container">
+            <div>
                 <BrowserRouter>
                     <div>
                         <Header /> 
                         <Route exact path="/" component={Landing} />
                         <Route path="/Dashboard" component={Dashboard} />
+                        <Route path="/Invoice" component={Invoice} />
+                        <Route path="/ProductReport" component={ProductReport} />
+                        <Route path="/Production" component={Production} />
                     </div>
                 </BrowserRouter>
             </div>
