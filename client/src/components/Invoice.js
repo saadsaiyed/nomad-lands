@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
+import Axios from "axios";
 
 function addAnotherRow(currentRow) {
     var tbody_table = document.getElementById("tbody_table");
@@ -8,9 +9,9 @@ function addAnotherRow(currentRow) {
     if (hiddenInput) {
         hiddenInput.remove();
         var row = tbody_table.insertRow(-1),
-            i,
-            hiddenInput = document.createElement("input");
+            i;
         
+        hiddenInput = document.createElement("input");
         hiddenInput.setAttribute("type", "hidden");
         hiddenInput.setAttribute("id", "hidden_input_" + newID);
         hiddenInput.setAttribute("value", "0");
@@ -125,18 +126,42 @@ function addAnotherRow(currentRow) {
     }
 }
 function onBarcodeChange(barcode) {
-    var lastID = parseInt(barcode.id.substr(-1));
-    if (lastID > 0) {
+    var lastID = parseInt(barcode.id.substr(-1)),
+        proceedToFetch = false;
+    // Increasing Count For Duplicates Barcode
+    if (lastID != 0 && barcode.value === document.querySelector("#barcode_" + (lastID-1)).value) {
         --lastID;
-        // Increasing Count For Duplicates Barcode
-        if (barcode.value == document.querySelector("#barcode_" + lastID).value) {
-            document.querySelector("#count_" + lastID).value++;
-            barcode.value = "";
-            barcode.focus();
-        }
-        else {
-            var currentID = lastID + 1;
-        }
+        var countValue = document.querySelector("#count_" + lastID).value;
+        document.querySelector("#count_" + lastID).value = (countValue != "") ? ++countValue : 1;
+        barcode.value = "";
+        barcode.focus();
+    }
+    else {
+        Axios({
+            method: "GET",
+            url: `/api/barcode/${barcode.value}/product`,
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+            .then(res => {
+                document.querySelector("#product_name_" + lastID).value = res.data.name;
+                if (document.querySelector("#count_" + lastID).value)
+                    document.querySelector("#count_" + lastID).value++;
+                else
+                    document.querySelector("#count_" + lastID).value = 1;
+            });
+        Axios({
+            method: "GET",
+            url: `/api/barcode/${barcode.value}`,
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+            .then(res => {
+                console.log(res.data.total_production - res.data.total_sold + res.data.adjustment);
+                document.querySelector("#stock_" + lastID).innerHTML = res.data.total_production - res.data.total_sold + res.data.adjustment;
+            });
     }
 }
 function invoiceSplitter(current_element) {
@@ -154,8 +179,9 @@ function invoiceSplitter(current_element) {
 }
 
 
-export default function Invoice() {
+export default function Invoice() {    
     useEffect(() => {
+
         document.getElementById("invoice_name").focus();
         
         //Initial Calling Functions
@@ -163,7 +189,7 @@ export default function Invoice() {
 
         // Event Listeners
         document.getElementById("tbody_table").addEventListener("change", (event) => {
-            if(event.target.id.substr(0, event.target.id.length-1) == 'barcode_'){
+            if(event.target.id.substr(0, event.target.id.length-1) === 'barcode_'){
                 onBarcodeChange(event.target);
             }
         });
