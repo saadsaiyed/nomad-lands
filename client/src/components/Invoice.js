@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Axios from "axios";
 
 function addAnotherRow(currentRow) {
@@ -11,10 +11,7 @@ function addAnotherRow(currentRow) {
         var row = tbody_table.insertRow(-1),
             i;
         
-        hiddenInput = document.createElement("input");
-        hiddenInput.setAttribute("type", "hidden");
-        hiddenInput.setAttribute("id", "hidden_input_" + newID);
-        hiddenInput.setAttribute("value", "0");
+        hiddenInput = React.createElement("input", {id:"hidden_input_" + newID, type: "hidden", value:0});
                     
         for (i = 0; i < tbody_table.rows[0].cells.length; i++) {
             var td = row.insertCell(i),
@@ -162,6 +159,8 @@ function onBarcodeChange(barcode) {
                 console.log(res.data.total_production - res.data.total_sold + res.data.adjustment);
                 document.querySelector("#stock_" + lastID).innerHTML = res.data.total_production - res.data.total_sold + res.data.adjustment;
             });
+        
+        // changing state
     }
 }
 function invoiceSplitter(current_element) {
@@ -178,8 +177,11 @@ function invoiceSplitter(current_element) {
     current_element.value = invoiceName;
 }
 
-
-export default function Invoice() {    
+function handleSubmit(params) {
+    
+}
+export default function Invoice() {
+    const [counter, setCounter] = useState(0);
     useEffect(() => {
 
         document.getElementById("invoice_name").focus();
@@ -187,20 +189,20 @@ export default function Invoice() {
         //Initial Calling Functions
         addAnotherRow(document.getElementById("tr_tbody_table_0"));
 
-        // Event Listeners
-        document.getElementById("tbody_table").addEventListener("change", (event) => {
-            if(event.target.id.substr(0, event.target.id.length-1) === 'barcode_'){
-                onBarcodeChange(event.target);
-            }
-        });
-        document.getElementById("invoice_name").addEventListener("change", (event) => invoiceSplitter(event.target), false);
-        document.getElementById("barcode_0").addEventListener("change", (event) => invoiceSplitter(event.target), false);
-        
-        
+        // Event Listeners - START
+            document.getElementById("tbody_table").addEventListener("change", (event) => {
+                if(event.target.id.substr(0, event.target.id.length-1) === 'barcode_'){
+                    onBarcodeChange(event.target);
+                }
+            });
+            document.getElementById("invoice_name").addEventListener("change", (event) => invoiceSplitter(event.target), false);
+            document.getElementById("barcode_0").addEventListener("change", (event) => invoiceSplitter(event.target), false);
+        // Event Listeners - END
     }, []);
 
     return (
         <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8 ">
+            <form onSubmit={handleSubmit()}>
             <header className="bg-white shadow">
                 <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                     <h1
@@ -211,7 +213,7 @@ export default function Invoice() {
                     </h1>
                 </div>
                 <div className="w-full bg-white p-5 rounded-lg lg:rounded-l-none">
-                    <form className="px-8 bg-white rounded">
+                    <div className="px-8 bg-white rounded">
                         <div>
                             <label className="block mb-2 text-sm font-bold text-gray-500" htmlFor="invoice_name">
                                 Invoice Name / Number
@@ -250,128 +252,129 @@ export default function Invoice() {
                                 />
                             </div>
                         </div>
-                    </form>
+                    </div>
                 </div>
             </header>
             <div className="flex flex-col">
-                <div className="-my-2 sm:-mx-6 lg:-mx-8">
-                    <div className="py-2 align-middle min-w-full sm:px-6 lg:px-8">
-                        <div className="shadow border-b border-gray-200 sm:rounded-lg">
-                            <table className="relative min-w-full divide-y divide-gray-200">
-                                <thead >
-                                    <tr>
-                                        <th
-                                            scope="col"
-                                            className="px-6 py-3 text-left text-xs font-bold text-gray-500 bg-gray-200 uppercase tracking-wider sticky top-0"
-                                        >
-                                            Barcode
-                                        </th>
-                                        <th
-                                            scope="col"
-                                            className="px-6 py-3 text-left text-xs font-bold text-gray-500 bg-gray-200 uppercase tracking-wide sticky top-0"
-                                        >
-                                            Product Name
-                                        </th>
-                                        <th
-                                            scope="col"
-                                            className="px-6 py-3 text-left text-xs font-bold text-gray-500 bg-gray-200 uppercase tracking-wide sticky top-0"
-                                        >
-                                            Count
-                                        </th>
-                                        <th
-                                            scope="col"
-                                            className="px-6 py-3 text-left text-xs font-bold text-gray-500 bg-gray-200 uppercase tracking-wide sticky top-0"
-                                        >
-                                            Stock
-                                        </th>
-                                        <th
-                                            scope="col"
-                                            className="py-3 text-xs font-bold text-gray-500 bg-gray-200 uppercase tracking-wide sticky top-0"
-                                        >
-                                            From Direct
-                                        </th>
-                                        <th
-                                            scope="col"
-                                            className="py-3 text-xs font-bold text-gray-500 bg-gray-200 uppercase tracking-wide sticky top-0"
-                                        >
-                                            Converted
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody
-                                    className="bg-white divide-y divide-gray-200"
-                                    id="tbody_table"
-                                >
-                                    <tr id="tr_tbody_table_0">
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            <div className="flex items-center">
-                                                <div className="mt-1 rounded-md shadow-sm">
-                                                    <input
-                                                        type="text"
-                                                        name="barcode_0"
-                                                        id="barcode_0"
-                                                        className="block w-full sm:text-lg text-gray-500 border-gray-300 rounded-md"
-                                                    />
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            <input
-                                                type="text"
-                                                name="product_name_0"
-                                                id="product_name_0"
-                                                className="block w-full sm:text-lg text-gray-500 border-gray-300 rounded-md"
-                                                tabIndex="1"
-                                            />
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            <div className="flex items-center">
-                                                <div className="mt-1 rounded-md shadow-sm">
-                                                    <input
-                                                        type="text"
-                                                        name="count_0"
-                                                        id="count_0"
-                                                        className="block w-full sm:text-lg text-gray-500 border-gray-300 rounded-md"
-                                                        size="1"
-                                                        tabIndex="1"
-                                                    />
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-gray-500">
-                                            <div
-                                                id="stock_0"
-                                                className="text-lg text-gray-900"
+                    <div className="-my-2 sm:-mx-6 lg:-mx-8">
+                        <div className="py-2 align-middle min-w-full sm:px-6 lg:px-8">
+                            <div className="shadow border-b border-gray-200 sm:rounded-lg">
+                                <table className="relative min-w-full divide-y divide-gray-200">
+                                    <thead >
+                                        <tr>
+                                            <th
+                                                scope="col"
+                                                className="px-6 py-3 text-left text-xs font-bold text-gray-500 bg-gray-200 uppercase tracking-wider sticky top-0"
                                             >
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                            <input
-                                                id="taken_from_direct_0"
-                                                name="taken_from_direct_0"
-                                                type="checkbox"
-                                                className="h-7 w-7 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-                                                tabIndex="1"
-                                            />
-                                            <input type="hidden" id="hidden_input_0" value="1" />
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                            <input
-                                                id="converted_0"
-                                                name="converted_0"
-                                                type="checkbox"
-                                                className="h-7 w-7 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-                                                tabIndex="1"
-                                            />
-                                            <input type="hidden" id="hidden_input_0" value="1" />
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                                                Barcode
+                                            </th>
+                                            <th
+                                                scope="col"
+                                                className="px-6 py-3 text-left text-xs font-bold text-gray-500 bg-gray-200 uppercase tracking-wide sticky top-0"
+                                            >
+                                                Product Name
+                                            </th>
+                                            <th
+                                                scope="col"
+                                                className="px-6 py-3 text-left text-xs font-bold text-gray-500 bg-gray-200 uppercase tracking-wide sticky top-0"
+                                            >
+                                                Count
+                                            </th>
+                                            <th
+                                                scope="col"
+                                                className="px-6 py-3 text-left text-xs font-bold text-gray-500 bg-gray-200 uppercase tracking-wide sticky top-0"
+                                            >
+                                                Stock
+                                            </th>
+                                            <th
+                                                scope="col"
+                                                className="py-3 text-xs font-bold text-gray-500 bg-gray-200 uppercase tracking-wide sticky top-0"
+                                            >
+                                                From Direct
+                                            </th>
+                                            <th
+                                                scope="col"
+                                                className="py-3 text-xs font-bold text-gray-500 bg-gray-200 uppercase tracking-wide sticky top-0"
+                                            >
+                                                Converted
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody
+                                        className="bg-white divide-y divide-gray-200"
+                                        id="tbody_table"
+                                    >
+                                        <tr id="tr_tbody_table_0">
+                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                <div className="flex items-center">
+                                                    <div className="mt-1 rounded-md shadow-sm">
+                                                        <input
+                                                            type="text"
+                                                            name="barcode_0"
+                                                            id="barcode_0"
+                                                            className="block w-full sm:text-lg text-gray-500 border-gray-300 rounded-md"
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                <input
+                                                    type="text"
+                                                    name="product_name_0"
+                                                    id="product_name_0"
+                                                    className="block w-full sm:text-lg text-gray-500 border-gray-300 rounded-md"
+                                                    tabIndex="1"
+                                                />
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                <div className="flex items-center">
+                                                    <div className="mt-1 rounded-md shadow-sm">
+                                                        <input
+                                                            type="text"
+                                                            name="count_0"
+                                                            id="count_0"
+                                                            className="block w-full sm:text-lg text-gray-500 border-gray-300 rounded-md"
+                                                            size="1"
+                                                            tabIndex="1"
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-gray-500">
+                                                <div
+                                                    id="stock_0"
+                                                    className="text-lg text-gray-900"
+                                                >
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                                <input
+                                                    id="taken_from_direct_0"
+                                                    name="taken_from_direct_0"
+                                                    type="checkbox"
+                                                    className="h-7 w-7 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                                                    tabIndex="1"
+                                                />
+                                                <input type="hidden" id="hidden_input_0" value="1" />
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                                <input
+                                                    id="converted_0"
+                                                    name="converted_0"
+                                                    type="checkbox"
+                                                    className="h-7 w-7 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                                                    tabIndex="1"
+                                                />
+                                                <input type="hidden" id="hidden_input_0" value="1" />
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </form>       
         </div>
     );
 }
