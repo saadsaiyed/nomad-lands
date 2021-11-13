@@ -11,8 +11,11 @@ function addAnotherRow(currentRow) {
         var row = tbody_table.insertRow(-1),
             i;
         
-        hiddenInput = React.createElement("input", {id:"hidden_input_" + newID, type: "hidden", value:0});
+        hiddenInput = document.createElement("input");
                     
+        hiddenInput.setAttribute("type", "hidden");
+        hiddenInput.setAttribute("id", "hidden_input_" + newID);
+        hiddenInput.setAttribute("value", "0");
         for (i = 0; i < tbody_table.rows[0].cells.length; i++) {
             var td = row.insertCell(i),
                 divP = document.createElement("div"),
