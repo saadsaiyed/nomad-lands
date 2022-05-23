@@ -17,7 +17,8 @@ const userLesseeSchema = new Schema({
     message: String,
     _preference: {
         // This data might be stored in cache. 
-        type: String
+        type: Object,
+        
     },
     total_production: Number,
     total_sold: Number,
